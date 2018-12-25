@@ -1,0 +1,16 @@
+logs
+target
+/.g8
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
+/RUNNING_PID
+/tmp
+*.class
+*.csv
+*.xlsx
+*.log
+/project/project
+/project/target
