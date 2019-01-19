@@ -8,15 +8,15 @@ import services.WebServiceFetcher
 
 import scala.concurrent.Future
 
-class CitizenInitiveService @Inject()(config: Configuration, val fetcher: WebServiceFetcher) {
+class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebServiceFetcher) {
   val baseUrl = config.get[String]("citizenInitiave.baseUrl")
   lazy val listingEndpoint: URL = new URL(baseUrl + "initiatives")
 
   val limitParameter = "limit"
   val offsetParameter = "offset"
 
-  def getAllInitiaves(): Future[InitiveInfo.InitiveListing] = {
-    fetcher.getAndParseJson[InitiveInfo.InitiveListing](listingEndpoint, parameters(42, 0))
+  def getAllInitiaves(): Future[InitiaveInfo.InitiaveListing] = {
+    fetcher.getAndParseJson[InitiaveInfo.InitiaveListing](listingEndpoint, parameters(42, 0))
   }
 
   private def parameters(limit: Int, offset: Int) = {

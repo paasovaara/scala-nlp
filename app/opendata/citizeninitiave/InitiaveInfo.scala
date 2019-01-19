@@ -8,18 +8,18 @@ case class TranslatedString(
   sv: Option[String]
 )
 
-case class InitiveInfo(
+case class InitiaveInfo(
   id: String,
   totalSupportCount: Int,
   name: TranslatedString
 )
 
-object InitiveInfo {
-  type InitiveListing = Seq[InitiveInfo]
+object InitiaveInfo {
+  type InitiaveListing = Seq[InitiaveInfo]
 
   implicit val languageReads: Reads[TranslatedString] = Json.reads[TranslatedString]
   implicit val languageWrites: OWrites[TranslatedString] = Json.writes[TranslatedString]
 
-  implicit val infoReads: Reads[InitiveInfo] = Json.reads[InitiveInfo]
-  implicit val infoWrites: OWrites[InitiveInfo] = Json.writes[InitiveInfo]
+  implicit val infoReads: Reads[InitiaveInfo] = Json.reads[InitiaveInfo]
+  implicit val infoWrites: OWrites[InitiaveInfo] = Json.writes[InitiaveInfo]
 }
