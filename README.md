@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/paasovaara/scala-nlp.svg?branch=master)](https://travis-ci.org/paasovaara/scala-nlp)
+
 # Scala NLP
 
 Trying out different NLP tricks with Scala.
