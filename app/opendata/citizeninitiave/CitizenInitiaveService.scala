@@ -6,11 +6,12 @@ import javax.inject.Inject
 import opendata.citizeninitiave.InitiaveInfo.InitiaveListing
 import play.api.Configuration
 import services.WebServiceFetcher
+import utils.Log
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebServiceFetcher) {
+class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebServiceFetcher) extends Log {
   val baseUrl = config.get[String]("citizenInitiave.baseUrl")
   lazy val listingEndpoint: URL = new URL(baseUrl + "initiatives")
 
@@ -30,6 +31,7 @@ class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebSe
     val newOnes = fetcher.getAndParseJson[InitiaveInfo.InitiaveListing](listingEndpoint, params)
     newOnes.flatMap {
       fetched => {
+        debug(s"received ${fetched.size} new messages for offset $offset")
         if (fetched.size < limit) {
           //We've received all, no need to continue the recursion
           Future.successful(aggregate ++ fetched)
