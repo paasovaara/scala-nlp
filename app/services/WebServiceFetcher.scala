@@ -17,12 +17,14 @@ class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: 
 
   val timeout: Duration = config.getOptional[Duration]("webServiceFetcher.timeout").getOrElse(10 seconds)
 
-  def getAndParseJson[T](url: URL)(implicit reads:Reads[T]): Future[T] = {
-    getJson(url).map(parseCaseClassFromJson[T])
+  type QueryParameter = (String, String)
+
+  def getAndParseJson[T](url: URL, parameters: Seq[QueryParameter] = Seq())(implicit reads:Reads[T]): Future[T] = {
+    getJson(url, parameters).map(parseCaseClassFromJson[T])
   }
 
-  def getJson(url: URL): Future[String] = {
-    val request = createRequest(url)
+  def getJson(url: URL, parameters: Seq[QueryParameter] = Seq()): Future[String] = {
+    val request = createRequest(url, parameters)
     request.get() map {
       response => {
         if (isSuccess(response)) {
@@ -35,10 +37,12 @@ class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: 
     }
   }
 
-  private def createRequest(url: URL) = {
+
+  private def createRequest(url: URL, parameters: Seq[QueryParameter]) = {
     wsClient.url(url.toString)
       .withFollowRedirects(true)
       .withRequestTimeout(timeout)
+      .withQueryStringParameters(parameters:_*)
       .addHttpHeaders("Accept" -> "application/json")
   }
 

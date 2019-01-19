@@ -12,8 +12,18 @@ class CitizenInitiveService @Inject()(config: Configuration, val fetcher: WebSer
   val baseUrl = config.get[String]("citizenInitiave.baseUrl")
   lazy val listingEndpoint: URL = new URL(baseUrl + "initiatives")
 
+  val limitParameter = "limit"
+  val offsetParameter = "offset"
+
   def getAllInitiaves(): Future[InitiveInfo.InitiveListing] = {
-    fetcher.getAndParseJson[InitiveInfo.InitiveListing](listingEndpoint)
+    fetcher.getAndParseJson[InitiveInfo.InitiveListing](listingEndpoint, parameters(42, 0))
+  }
+
+  private def parameters(limit: Int, offset: Int) = {
+    Seq(
+      (limitParameter, limit.toString),
+      (offsetParameter, offset.toString)
+    )
   }
 
 }
