@@ -8,5 +8,5 @@ Project boilerplate is created using the [Play framework 2.6 seed](https://www.p
 
 Currently project uses old Scala version (2.11) because one of the dependencies we use for [plotting the HTML graphs](https://github.com/vegas-viz/Vegas) 
 has pre-built libraries only for that version. It's possible to build that project with newer Scala version
-in case we want to upgrade (possibly add as a git submodule?)
+in case we want to upgrade (possibly add as a git submodule?). Anyway we might want to do it since the latest release is very old (July 2017)
 
