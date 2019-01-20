@@ -1,5 +1,5 @@
 lazy val commonSettings = Seq(
-  scalaVersion := "2.12.7",
+  scalaVersion := "2.11.12",
   organization := "paasovaara",
   version := "1.0-SNAPSHOT",
   name := """scala-nlp"""
@@ -19,7 +19,7 @@ lazy val compilerSettings = Seq(
     "-Xfatal-warnings",
     "-Xlint",
     // https://github.com/scala/scala/blob/2.12.x/src/compiler/scala/tools/nsc/settings/Warnings.scala
-    "-Ywarn-unused:-imports",  // Warn when local and private vals, vars, defs, and types are are unused. Let's exclude imports
+    //"-Ywarn-unused:-imports",  // Warn when local and private vals, vars, defs, and types are are unused. Let's exclude imports
     "-Ywarn-value-discard",    // Warn when non-Unit expression results are unused.
     "-Ywarn-dead-code"         // Warn when dead code is identified.
   )
@@ -36,6 +36,7 @@ lazy val dependencies = Seq(
   libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
   //libraryDependencies += "org.postgresql" % "postgresql" % "9.4.1212",
   //libraryDependencies += "org.playframework.anorm" %% "anorm" % "2.6.0",
+  libraryDependencies += "org.vegas-viz" %% "vegas" % "0.3.11"
 )
 
 lazy val root = (project in file("."))
