@@ -6,6 +6,7 @@ import javax.inject.Inject
 import play.api.Configuration
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSResponse}
+import utils.Log
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -13,32 +14,37 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: WSClient) {
+class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: WSClient) extends Log {
 
   val timeout: Duration = config.getOptional[Duration]("webServiceFetcher.timeout").getOrElse(10 seconds)
 
-  def getAndParseJson[T](url: URL)(implicit reads:Reads[T]): Future[T] = {
-    getJson(url).map(parseCaseClassFromJson[T])
+  type QueryParameter = (String, String)
+
+  def getAndParseJson[T](url: URL, parameters: Seq[QueryParameter] = Seq())(implicit reads:Reads[T]): Future[T] = {
+    getJson(url, parameters).map(parseCaseClassFromJson[T])
   }
 
-  def getJson(url: URL): Future[String] = {
-    val request = createRequest(url)
+  def getJson(url: URL, parameters: Seq[QueryParameter] = Seq()): Future[String] = {
+    val request = createRequest(url, parameters)
     request.get() map {
       response => {
         if (isSuccess(response)) {
           response.body
         }
         else {
+          warn(s"Received status ${response.status} for request $url")
           throw new Exception("Failed to get " + url)
         }
       }
     }
   }
 
-  private def createRequest(url: URL) = {
+
+  private def createRequest(url: URL, parameters: Seq[QueryParameter]) = {
     wsClient.url(url.toString)
       .withFollowRedirects(true)
       .withRequestTimeout(timeout)
+      .withQueryStringParameters(parameters:_*)
       .addHttpHeaders("Accept" -> "application/json")
   }
 
