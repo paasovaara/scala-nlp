@@ -6,12 +6,15 @@ import opendata.citizeninitiative.CitizenInitiaveService
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 import play.api.mvc.Results
+import services.StemmingService
 import utils.Log
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-class DataImportController @Inject()(cc: ControllerComponents, citizenInitiveService: CitizenInitiaveService)
+class DataImportController @Inject()(cc: ControllerComponents,
+                                     citizenInitiveService: CitizenInitiaveService,
+                                     stemmingService: StemmingService)
   extends AbstractController(cc) with Log {
 
   def listInitiaves() = Action.async {
@@ -30,9 +33,18 @@ class DataImportController @Inject()(cc: ControllerComponents, citizenInitiveSer
     }
   }
 
-  def initiave(id: Int) = Action.async {
+  def initiave(id: Int, stem: Boolean = true) = Action.async {
     citizenInitiveService.getInitiave(id).map(info => {
-      Ok(Json.toJson(FullData(info)))
+      if (stem) {
+        //Not very nice to return different model alltogether just on basis of parameter
+        //This is more or less debug code to move on with the NLP part. TODO fix
+        val orig = info.proposal.fi.getOrElse("")
+        val stemmed = stemmingService.stem(orig)
+        Ok(Json.toJson(Stemmed(orig, stemmed)))
+      }
+      else {
+        Ok(Json.toJson(FullData(info)))
+      }
     }) recover {
       case t: Throwable => {
         error(s"Error at getting initiative $id", t)

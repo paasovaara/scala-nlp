@@ -8,7 +8,7 @@ GET     /                           controllers.HomeController.index
 
 GET     /api/v1/initiaves           controllers.DataImportController.listInitiaves
 
-GET     /api/v1/initiaves/:id        controllers.DataImportController.initiave(id: Int)
+GET     /api/v1/initiaves/:id        controllers.DataImportController.initiave(id: Int, stemmed: Boolean ?= true)
 
 GET     /api/v1/initiaves/titles    controllers.DataImportController.listTitles
 
