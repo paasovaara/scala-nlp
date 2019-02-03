@@ -17,7 +17,11 @@ class DataImportController @Inject()(cc: ControllerComponents, citizenInitiveSer
   def listInitiaves() = Action.async {
     val listingFuture = citizenInitiveService.getAllInitiaves()
     listingFuture.map(listing => {
-      Ok(s"Got ${listing.size} listings")
+      val fullDataListing = listing.map(FullData(_))
+
+      val full = FullDataListing(fullDataListing.size, fullDataListing)
+
+      Ok(Json.toJson(full))
     }) recover {
       case t: Throwable => {
         error("Error at listing initiaves", t)
