@@ -8,13 +8,12 @@ import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSResponse}
 import utils.Log
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: WSClient) extends Log {
+class WebServiceFetcher @Inject()(config: Configuration)(implicit val wsClient: WSClient, ec: WebServiceExecutionContext) extends Log {
 
   val timeout: Duration = config.getOptional[Duration]("webServiceFetcher.timeout").getOrElse(10 seconds)
 
@@ -31,11 +30,12 @@ class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: 
   }
 
   def getJson(url: URL, parameters: Seq[QueryParameter] = Seq()): Future[String] = {
+    val start = System.currentTimeMillis()
     val request = createRequest(url, parameters)
     debug(s"Sending request to ${url.toString}")
     request.get() map {
       response => {
-        debug(s"Got response for request ${url.toString}")
+        debug(s"Got response for request ${url.toString} in ${System.currentTimeMillis() - start}ms")
         if (isSuccess(response)) {
           response.body
         }
