@@ -37,6 +37,11 @@ class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebSe
     //TODO error handling
   }
 
+  def getInitiave(id: Int): Future[DetailedInitiaveInfo] = {
+    val url = new URL(s"$listingEndpoint/$id")
+    fetcher.getAndParseJson[DetailedInitiaveInfo](url)
+  }
+
   private def getIniativesAt(offset: Int, limit: Int, aggregate: InitiaveListing): Future[InitiaveInfo.InitiaveListing] = {
     val params = parameters(limit, offset)
     val newOnes = fetcher.getAndParseJson[InitiaveInfo.InitiaveListing](listingEndpoint, params)

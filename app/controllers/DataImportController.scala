@@ -30,6 +30,17 @@ class DataImportController @Inject()(cc: ControllerComponents, citizenInitiveSer
     }
   }
 
+  def initiave(id: Int) = Action.async {
+    citizenInitiveService.getInitiave(id).map(info => {
+      Ok(Json.toJson(FullData(info)))
+    }) recover {
+      case t: Throwable => {
+        error(s"Error at getting initiave $id", t)
+        InternalServerError("Failed: " + t.getMessage)
+      }
+    }
+  }
+
   def listTitles() = Action.async {
     val listingFuture = citizenInitiveService.getAllInitiaves()
     listingFuture.map(listing => {

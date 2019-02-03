@@ -8,6 +8,8 @@ GET     /                           controllers.HomeController.index
 
 GET     /api/v1/initiaves           controllers.DataImportController.listInitiaves
 
+GET     /api/v1/initiaves/:id        controllers.DataImportController.initiave(id: Int)
+
 GET     /api/v1/initiaves/titles    controllers.DataImportController.listTitles
 
 # Map static resources from the /public folder to the /assets URL path

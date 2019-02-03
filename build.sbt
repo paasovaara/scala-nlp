@@ -26,16 +26,11 @@ lazy val compilerSettings = Seq(
 )
 
 lazy val dependencies = Seq(
-  //libraryDependencies += filters,
-  //libraryDependencies += jdbc,
-  //libraryDependencies += evolutions,
   libraryDependencies += ws,
   libraryDependencies += guice,
-  //libraryDependencies += ehcache,
   libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.0",
   libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test,
-  //libraryDependencies += "org.postgresql" % "postgresql" % "9.4.1212",
-  //libraryDependencies += "org.playframework.anorm" %% "anorm" % "2.6.0",
+  libraryDependencies += "com.github.rholder" % "snowball-stemmer" % "1.3.0.581.1",
 )
 
 lazy val root = (project in file("."))
