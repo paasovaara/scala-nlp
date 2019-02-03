@@ -1,4 +1,4 @@
-package opendata.citizeninitiave
+package opendata.citizeninitiative
 
 import play.api.libs.json.{Json, OWrites, Reads}
 
@@ -8,18 +8,18 @@ case class TranslatedString(
   sv: Option[String]
 )
 
-case class InitiaveInfo(
+case class InitiativeInfo(
   id: String,
   totalSupportCount: Int,
   name: TranslatedString
 )
 
-object InitiaveInfo {
-  type InitiaveListing = Seq[InitiaveInfo]
+object InitiativeInfo {
+  type InitiativeListing = Seq[InitiativeInfo]
 
   implicit val languageReads: Reads[TranslatedString] = Json.reads[TranslatedString]
   implicit val languageWrites: OWrites[TranslatedString] = Json.writes[TranslatedString]
 
-  implicit val infoReads: Reads[InitiaveInfo] = Json.reads[InitiaveInfo]
-  implicit val infoWrites: OWrites[InitiaveInfo] = Json.writes[InitiaveInfo]
+  implicit val infoReads: Reads[InitiativeInfo] = Json.reads[InitiativeInfo]
+  implicit val infoWrites: OWrites[InitiativeInfo] = Json.writes[InitiativeInfo]
 }

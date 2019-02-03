@@ -1,6 +1,6 @@
 package models
 
-import opendata.citizeninitiave.DetailedInitiaveInfo
+import opendata.citizeninitiative.DetailedInitiativeInfo
 
 case class Title(
   title: String
@@ -15,7 +15,7 @@ case class FullData(
 )
 
 object FullData {
-  def apply(info:DetailedInitiaveInfo): FullData = {
+  def apply(info:DetailedInitiativeInfo): FullData = {
     FullData(
       info.id,
       info.supportCount,

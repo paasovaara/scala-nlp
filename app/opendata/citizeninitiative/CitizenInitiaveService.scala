@@ -1,10 +1,10 @@
-package opendata.citizeninitiave
+package opendata.citizeninitiative
 
 import java.net.URL
 
 import javax.inject.Inject
-import opendata.citizeninitiave.DetailedInitiaveInfo.DetailedInitiaveListing
-import opendata.citizeninitiave.InitiaveInfo.InitiaveListing
+import opendata.citizeninitiative.DetailedInitiativeInfo.DetailedInitiativeListing
+import opendata.citizeninitiative.InitiativeInfo.InitiativeListing
 import play.api.Configuration
 import services.WebServiceFetcher
 import utils.Log
@@ -22,12 +22,12 @@ class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebSe
   val offsetParameter = "offset"
   val defaultLimit = 50
 
-  def getAllInitiaves(): Future[DetailedInitiaveListing] = {
+  def getAllInitiaves(): Future[DetailedInitiativeListing] = {
     getIniativesAt(0, defaultLimit, Seq()).map(all => {
       val futuresForDetailedInfos = all.map {
         info => {
           val url = new URL(info.id)
-          fetcher.getAndParseJson[DetailedInitiaveInfo](url)
+          fetcher.getAndParseJson[DetailedInitiativeInfo](url)
         }
       }
       val combined = Future.sequence(futuresForDetailedInfos)
@@ -37,14 +37,14 @@ class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebSe
     //TODO error handling
   }
 
-  def getInitiave(id: Int): Future[DetailedInitiaveInfo] = {
+  def getInitiave(id: Int): Future[DetailedInitiativeInfo] = {
     val url = new URL(s"$listingEndpoint/$id")
-    fetcher.getAndParseJson[DetailedInitiaveInfo](url)
+    fetcher.getAndParseJson[DetailedInitiativeInfo](url)
   }
 
-  private def getIniativesAt(offset: Int, limit: Int, aggregate: InitiaveListing): Future[InitiaveInfo.InitiaveListing] = {
+  private def getIniativesAt(offset: Int, limit: Int, aggregate: InitiativeListing): Future[InitiativeInfo.InitiativeListing] = {
     val params = parameters(limit, offset)
-    val newOnes = fetcher.getAndParseJson[InitiaveInfo.InitiaveListing](listingEndpoint, params)
+    val newOnes = fetcher.getAndParseJson[InitiativeInfo.InitiativeListing](listingEndpoint, params)
     newOnes.flatMap {
       fetched => {
         debug(s"received ${fetched.size} new messages for offset $offset")

@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 import models._
-import opendata.citizeninitiave.CitizenInitiaveService
+import opendata.citizeninitiative.CitizenInitiaveService
 import play.api.libs.json.Json
 import play.api.mvc.{AbstractController, ControllerComponents}
 import play.api.mvc.Results
@@ -24,7 +24,7 @@ class DataImportController @Inject()(cc: ControllerComponents, citizenInitiveSer
       Ok(Json.toJson(full))
     }) recover {
       case t: Throwable => {
-        error("Error at listing initiaves", t)
+        error("Error at listing initiatives", t)
         InternalServerError("Failed: " + t.getMessage)
       }
     }
@@ -35,7 +35,7 @@ class DataImportController @Inject()(cc: ControllerComponents, citizenInitiveSer
       Ok(Json.toJson(FullData(info)))
     }) recover {
       case t: Throwable => {
-        error(s"Error at getting initiave $id", t)
+        error(s"Error at getting initiative $id", t)
         InternalServerError("Failed: " + t.getMessage)
       }
     }
