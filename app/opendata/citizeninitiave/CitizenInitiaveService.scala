@@ -3,12 +3,15 @@ package opendata.citizeninitiave
 import java.net.URL
 
 import javax.inject.Inject
+import opendata.citizeninitiave.DetailedInitiaveInfo.DetailedInitiaveListing
 import opendata.citizeninitiave.InitiaveInfo.InitiaveListing
 import play.api.Configuration
 import services.WebServiceFetcher
 import utils.Log
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
+import scala.concurrent._
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebServiceFetcher) extends Log {
@@ -19,11 +22,19 @@ class CitizenInitiaveService @Inject()(config: Configuration, val fetcher: WebSe
   val offsetParameter = "offset"
   val defaultLimit = 50
 
-  def getAllInitiaves(): Future[InitiaveInfo.InitiaveListing] = {
-    val all = getIniativesAt(0, defaultLimit, Seq())
-    //TODO error handling
+  def getAllInitiaves(): Future[DetailedInitiaveListing] = {
+    getIniativesAt(0, defaultLimit, Seq()).map(all => {
+      val futuresForDetailedInfos = all.map {
+        info => {
+          val url = new URL(info.id)
+          fetcher.getAndParseJson[DetailedInitiaveInfo](url)
+        }
+      }
+      val combined = Future.sequence(futuresForDetailedInfos)
+      Await.result(combined, 30.seconds)
 
-    all
+    })
+    //TODO error handling
   }
 
   private def getIniativesAt(offset: Int, limit: Int, aggregate: InitiaveListing): Future[InitiaveInfo.InitiaveListing] = {

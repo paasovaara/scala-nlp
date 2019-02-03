@@ -22,12 +22,20 @@ class WebServiceFetcher @Inject()(config: Configuration, implicit val wsClient: 
 
   def getAndParseJson[T](url: URL, parameters: Seq[QueryParameter] = Seq())(implicit reads:Reads[T]): Future[T] = {
     getJson(url, parameters).map(parseCaseClassFromJson[T])
+      .recover {
+        case t: Throwable => {
+          error("Failed to get " + url.toString, t)
+          throw t
+        }
+      }
   }
 
   def getJson(url: URL, parameters: Seq[QueryParameter] = Seq()): Future[String] = {
     val request = createRequest(url, parameters)
+    debug(s"Sending request to ${url.toString}")
     request.get() map {
       response => {
+        debug(s"Got response for request ${url.toString}")
         if (isSuccess(response)) {
           response.body
         }
